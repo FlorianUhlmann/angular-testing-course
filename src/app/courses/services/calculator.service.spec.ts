@@ -1,31 +1,47 @@
+import { TestBed } from '@angular/core/testing';
 import {CalculatorService} from './calculator.service';
 import {LoggerService} from './logger.service';
 
 describe('Calculator Service', () => {
 
+
   let calculator : CalculatorService
   let loggerSpy  : any;
 
-  beforeEach(()=>{
-    console.log("in before Each")
-    loggerSpy = jasmine.createSpyObj('LoggerService', ["log"]);
 
-    calculator = new CalculatorService(loggerSpy);
-  })
+    beforeEach(()=>{
 
 
-  it('should add two numbers', () =>{
+      console.log("in before Each")
+      loggerSpy = jasmine.createSpyObj('LoggerService', ["log"]);
 
-    const result = calculator.add(2,2);
+      //Depending INjection, instead of calling constructors directly ()
+      TestBed.configureTestingModule({
+        providers: [
+            CalculatorService,
+            {provide: LoggerService, useValue: loggerSpy}
+        ]
+      });
+        calculator = TestBed.get(CalculatorService);
+      })
 
-    expect(result).toBe(4);
 
-    expect(loggerSpy.log).toHaveBeenCalledTimes(1);
-  })
 
-  it('should substract two numbers', () =>{
-    const result = calculator.subtract(10,10);
-    expect(result).toBe(0);
-    expect(loggerSpy.log).toHaveBeenCalledTimes(1);
-  })
+    it('should add two numbers', () =>{
+
+      const result = calculator.add(2,2);
+
+      expect(result).toBe(4);
+
+      expect(loggerSpy.log).toHaveBeenCalledTimes(1);
+    })
+
+    it('should substract two numbers', () =>{
+
+      const result = calculator.subtract(10,10);
+
+      expect(result).toBe(0);
+
+      expect(loggerSpy.log).toHaveBeenCalledTimes(1);
+    })
 })
